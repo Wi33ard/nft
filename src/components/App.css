@@ -1,8 +1,13 @@
 /* Styles go here */
 
 .token {
-  height: 150px;
-  width: 150px;
+  height: 50px;
+  width: 50px;
   border-radius: 50%;
   display: inline-block;
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 500;
 }

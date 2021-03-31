@@ -8,6 +8,8 @@ class App extends Component {
   async componentWillMount() {
     await this.loadWeb3()
     await this.loadBlockchainData()
+    console.log("TOTAL SUPPLY: ", this.state.totalSupply)
+    console.log("CONTRACT: ", this.state.contract)
   }
 
   async loadWeb3() {
@@ -31,7 +33,7 @@ class App extends Component {
 
     const networkId = await web3.eth.net.getId()
     const networkData = Color.networks[networkId]
-    if(networkData) {
+    if (networkData) {
       const abi = Color.abi
       const address = networkData.address
       const contract = new web3.eth.Contract(abi, address)
@@ -51,12 +53,22 @@ class App extends Component {
   }
 
   mint = (color) => {
+    console.log("MINT color:", color);
     this.state.contract.methods.mint(color).send({ from: this.state.account })
-    .once('receipt', (receipt) => {
-      this.setState({
-        colors: [...this.state.colors, color]
+      .once('receipt', (receipt) => {
+        this.setState({
+          colors: [...this.state.colors, color]
+        })
       })
-    })
+  }
+
+  async handleTransfer(color) {
+    console.log('starting transfer...');
+    try {
+      await this.state.contract.methods.safeTransferFrom(this.state.account, '0x9dc22774B42699785Cf278f43fE57A3c97dd897c', 1);
+    } catch (error) {
+      console.log("ERROR: ", error);
+    }
   }
 
   constructor(props) {
@@ -91,7 +103,7 @@ class App extends Component {
           <div className="row">
             <main role="main" className="col-lg-12 d-flex text-center">
               <div className="content mr-auto ml-auto">
-                <h1>Issue Token</h1>
+                <h4>Issue Token</h4>
                 <form onSubmit={(event) => {
                   event.preventDefault()
                   const color = this.color.value
@@ -112,13 +124,19 @@ class App extends Component {
               </div>
             </main>
           </div>
-          <hr/>
+          <hr />
           <div className="row text-center">
-            { this.state.colors.map((color, key) => {
-              return(
-                <div key={key} className="col-md-3 mb-3">
+            {this.state.colors.map((color, key) => {
+              return (
+                <div key={key} className="col-md-2 mb-2">
                   <div className="token" style={{ backgroundColor: color }}></div>
-                  <div>{color}</div>
+                  <div className="label">{color}</div>
+                  <button
+                    className="btn btn-sm btn-secondary"
+                    onClick={() => this.handleTransfer(color)}
+                  >
+                    Transfer
+                  </button>
                 </div>
               )
             })}
