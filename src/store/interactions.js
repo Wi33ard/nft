@@ -17,9 +17,9 @@ import {
   // balancesLoaded,
   // balancesLoading
 } from './actions';
-import Color from '../abis/Color.json';
+// import Color from '../abis/Color.json';
 // import Token from '../abis/Token.json';
-import { ETHER_ADDRESS } from "../utilities/helpers";
+// import { ETHER_ADDRESS } from "../utilities/helpers";
 
 
 export const loadWeb3 = async (dispatch) => {

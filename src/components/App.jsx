@@ -65,12 +65,24 @@ class App extends Component {
   }
 
   async handleTransfer(color) {
-    console.log('starting transfer...');
     try {
-      await this.state.contract.methods.safeTransferFrom(this.state.account, '0x9dc22774B42699785Cf278f43fE57A3c97dd897c', 1);
+      this.state.contract.methods.safeTransferFrom(this.state.account, '0xdE55DeAcF080c305C352c92083F3Ce2b5FcBaE5a', 1).send({ from: this.state.account });
+      console.log('starting transfer...');
     } catch (error) {
       console.log("ERROR: ", error);
     }
+  }
+
+  getOwner(color) {
+    let owner = "n/a"
+    this.state.contract.methods.ownerOf(1).call({ from: this.state.account })
+    .then(function(result) {
+      if(result!==undefined) {
+        owner = result;
+        return owner;
+      }
+    });
+    return owner;
   }
 
   constructor(props) {
@@ -93,7 +105,7 @@ class App extends Component {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Color Tokens
+            Color Tokens {'{'+this.state.totalSupply+'}'}
           </a>
           <ul className="navbar-nav px-3">
             <li className="nav-item text-nowrap d-none d-sm-none d-sm-block">
@@ -133,6 +145,7 @@ class App extends Component {
                 <div key={key} className="col-md-2 mb-2">
                   <div className="token" style={{ backgroundColor: color }}></div>
                   <div className="label">{color}</div>
+                  <div>owner: {this.getOwner(color)}</div>
                   <button
                     className="btn btn-sm btn-secondary"
                     onClick={() => this.handleTransfer(color)}
