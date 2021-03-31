@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import Web3 from 'web3'
-import './App.css';
+import './App.css'
 import Color from '../abis/Color.json'
+import {loadWeb3} from '../store/interactions.js'
+
 
 class App extends Component {
 
